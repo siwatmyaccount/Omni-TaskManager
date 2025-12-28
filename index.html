@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Omni Task Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                <title>Omni Task Manager</title>
+                
+               <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%232563eb%22><path d=%22M20 6h-3V4c0-1.103-.897-2-2-2H9c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2zm-5 0H9V4h6v2z%22/></svg>" type="image/svg+xml">
+                
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+                
+</head>
+<body>
+
+    <div id="toastContainer"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class='bx bxs-briefcase-alt-2'></i> Omni<span>Task Manager</span>
+            </div>
+            
+            <div class="nav-menu">
+                <button class="nav-link active" data-tab="home-tab"><i class='bx bx-home-alt'></i> <span data-i18n="nav_dashboard">Dashboard</span></button>
+                <button class="nav-link" data-tab="profile-tab"><i class='bx bx-user'></i> <span data-i18n="nav_profile">Profile</span></button>
+                <button class="nav-link" data-tab="settings-tab"><i class='bx bx-cog'></i> <span data-i18n="nav_settings">Settings</span></button>
+            </div>
+
+            <div class="nav-right">
+                <div class="lang-switch">
+                    <button id="langBtn" class="btn-lang">
+                        <img src="https://flagcdn.com/w40/th.png" id="langFlag" alt="Lang">
+                        <span id="langText">TH</span>
+                    </button>
+                </div>
+                <div class="nav-auth">
+                    <button id="navLoginBtn" class="btn-primary">Log In</button>
+                    <div id="userProfileDisplay" class="user-profile hidden">
+                        <img src="" alt="User" id="navAvatar" class="avatar-small">
+                        <span id="navUsername">User</span>
+                        <button id="logoutBtn" class="btn-icon-only" title="Logout"><i class='bx bx-log-out'></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+            
+          
+
+    <main class="main-container">
+        
+        <header class="page-header hidden" id="welcomeSection">
+            <div>
+                <h1 data-i18n="header_overview">Overview</h1>
+                <p class="subtitle"><span data-i18n="header_welcome">Welcome back</span>, <span id="headerUsername">User</span>.</p>
+            </div>
+            <div class="header-meta">
+                <div class="date-badge">
+                    <i class='bx bx-calendar'></i> <span id="todayDate">...</span>
+                </div>
+            </div>
+            
+        </header>
+
+        <div class="content-wrapper">
+            
+            <section id="home-tab" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-blue"><i class='bx bx-task'></i></div>
+                        <div class="stat-info"><span class="stat-label" data-i18n="stat_total">Total Tasks</span><span class="stat-number" id="homeTotalTasks">0</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-green"><i class='bx bx-check-circle'></i></div>
+                        <div class="stat-info"><span class="stat-label" data-i18n="stat_completed">Completed</span><span class="stat-number text-green" id="homeCompletedTasks">0</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-purple"><i class='bx bx-pie-chart-alt-2'></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label" data-i18n="stat_progress">Progress</span>
+                            <div class="progress-mini"><div id="progressBarHome" class="progress-fill"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workspace-grid">
+                    
+                    <div class="main-column">
+                        <div class="search-wrapper">
+                            <div class="search-box">
+                                <i class='bx bx-search search-icon'></i>
+                                <input type="text" id="searchTask" placeholder="Search tasks..." autocomplete="off">
+                                <i class='bx bx-x-circle clear-icon' id="clearSearchBtn"></i>
+                            </div>
+                        </div>
+                        
+
+                        <div class="card task-creator">
+                            <div class="input-row main-input">
+                                <i class='bx bx-plus'></i>
+                                <input type="text" id="newTask" data-i18n-placeholder="ph_add_task" placeholder="Add a new task..." autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                            </div>
+                            <div class="task-options">
+                                <select id="taskCategory" class="select-modern">
+                                    <option value="Work">🏢 Work</option>
+                                    <option value="Personal">🏠 Personal</option>
+                                    <option value="Meeting">🤝 Meeting</option>
+                                    <option value="Design">🎨 Design</option>
+                                </select>
+                                <select id="taskPriority" class="select-modern">
+                                    <option value="normal">Normal</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                                <input type="date" id="taskDueDate" class="date-modern">
+                                <button id="addTaskBtn" class="btn-primary" data-i18n="btn_add">Add Task</button>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header-tabs">
+                                <h3 data-i18n="title_active_tasks">My Tasks</h3>
+                                <div class="filter-tabs">
+                                    <button class="filter-btn active" data-filter="all">All</button>
+                                    <button class="filter-btn" data-filter="pending">Pending</button>
+                                    <button class="filter-btn" data-filter="completed">Done</button>
+                                </div>
+                            </div>
+                            <ul id="taskList" class="corporate-list"></ul>
+                        </div>
+                        <div class="card calendar-widget">
+                        <div class="calendar-header">
+                            <h3 id="monthYearDisplay">Month Year</h3>
+                            <div class="calendar-nav">
+                                <button id="prevMonthBtn" class="btn-icon-only"><i class='bx bx-chevron-left'></i></button>
+                                <button id="todayBtn" class="btn-text">Today</button>
+                                <button id="nextMonthBtn" class="btn-icon-only"><i class='bx bx-chevron-right'></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="calendar-grid-header">
+                            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                        </div>
+                        
+                        <div class="calendar-grid" id="calendarGrid">
+                            </div>
+                    </div>
+                    </div>
+                    
+                    <div class="side-column">
+                        <div class="card">
+                            <div class="card-header"><h3 data-i18n="title_analytics">Analytics</h3></div>
+                            <div class="chart-box"><canvas id="taskChart"></canvas></div>
+                        </div>
+                      <div class="card">
+                            <div class="card-header"><h3>⏰ Reminder</h3></div>
+                            <div class="reminder-box" style="display:flex; gap:5px; flex-direction:column;">
+                                <div style="display:flex; gap:5px;">
+                                    <input type="time" id="reminderTime" class="form-control">
+                                    <button id="setReminderBtn" class="btn-primary" style="padding: 8px 12px;">Set</button>
+                                    <button id="clearReminderBtn" class="btn-danger-outline hidden" style="padding: 8px;"><i class='bx bx-trash'></i></button>
+                                </div>
+                                <div id="reminderStatus" style="font-size: 0.85rem; color: var(--accent); margin-top: 5px; display: none;">
+                                    <i class='bx bx-bell-ring bx-tada'></i> ตั้งปลุกไว้ตอน <span id="alarmTimeDisplay">--:--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 data-i18n="title_notes">Notes</h3>
+                                <span id="noteSaveStatus" style="font-size: 0.75rem; color: var(--text-light); font-weight: normal;"></span>
+                            </div>
+                            <textarea id="dailyNote" data-i18n-placeholder="ph_notes" placeholder="Quick notes..."></textarea>
+                            <div class="actions-right" style="margin-top: 10px;">
+                                <button id="saveNoteBtn" class="btn-primary" data-i18n="btn_save_note">Save Note</button>
+                            </div>
+                        </div>
+                            
+                        <div class="card">
+                        <div class="card-header">
+                            <h3><i class='bx bx-link'></i> Quick Links / ระบบทางลัดเว็บ</h3>
+                            <button id="addLinkBtn" class="btn-icon-only"><i class='bx bx-plus'></i></button>
+                        </div>
+                        
+                        <div class="link-grid" id="linkList">
+                            </div>
+
+                        <div id="linkForm" class="link-form hidden">
+                            <input type="text" id="linkName" placeholder="Name (e.g. Google)" class="form-control-sm">
+                            <input type="url" id="linkUrl" placeholder="URL (https://...)" class="form-control-sm">
+                            <button id="saveLinkBtn" class="btn-primary-sm full-width">Add Link</button>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+                
+            </section> 
+
+           <section id="profile-tab" class="tab-content">
+    <div class="profile-container-pro">
+        
+        <div class="profile-header-card">
+            <div class="profile-cover">
+                <button class="btn-edit-cover"><i class='bx bxs-camera'></i> Edit Cover</button>
+            </div>
+            <div class="profile-user-row">
+                <div class="profile-avatar-wrapper">
+                    <img src="" id="profileAvatarMain" alt="Profile">
+                    <div class="online-status"></div>
+                </div>
+                <div class="profile-names">
+                    <h2 id="profileUsername">Loading...</h2>
+                    <span class="badge badge-role" id="profileRoleBadge">Employee</span>
+                </div>
+                <div class="profile-actions-top">
+                    <button class="btn-secondary" id="btnLogOutProfile"><i class='bx bx-log-out'></i> Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-grid">
+            <div class="profile-col-left">
+                <div class="card card-level">
+                    <div class="level-info">
+                        <span class="lvl-label">Current Level</span>
+                        <span class="lvl-number" id="userLevelDisplay">1</span>
+                    </div>
+                    <div class="xp-bar-container">
+                        <div class="xp-info">
+                            <span>Experience</span>
+                            <span id="xpText">0 / 100 XP</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="xpBarFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <p class="lvl-quote">"Complete tasks to level up!"</p>
+                </div>
+
+                <div class="stats-mini-grid">
+                    <div class="stat-box">
+                        <i class='bx bx-check-double'></i>
+                        <h4 id="profileTotalDone">0</h4>
+                        <p>Tasks Done</p>
+                    </div>
+                    <div class="stat-box">
+                        <i class='bx bx-calendar-check'></i>
+                        <h4 id="profileJoinedDate">-</h4>
+                        <p>Joined</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-col-right">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class='bx bx-user-pin'></i> Personal Details</h3>
+                    </div>
+                    <div class="form-grid-profile">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="editFullName" class="form-control" placeholder="Your Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="editEmail" class="form-control" readonly style="background: var(--bg-body); cursor: not-allowed;">
+                        </div>
+                        <div class="form-group">
+                            <label>Job Title / Position</label>
+                            <input type="text" id="editJob" class="form-control" placeholder="e.g. Developer">
+                        </div>
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea id="editBio" class="form-control" rows="3" placeholder="Tell something about yourself..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button id="saveProfileBtn" class="btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+            <section id="settings-tab" class="tab-content">
+                <div class="settings-layout">
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class='bx bx-palette'></i> <span data-i18n="title_appearance">Appearance</span></h3>
+                        </div>
+                        <div class="theme-selector-container">
+                            <div class="theme-card active" id="btnThemeLight">
+                                <div class="theme-icon"><i class='bx bx-sun'></i></div>
+                                <div class="theme-info">
+                                    <h4>Light Mode</h4>
+                                    <p>สว่าง / ใช้งานปกติ</p>
+                                </div>
+                                <div class="check-circle"><i class='bx bx-check'></i></div>
+                            </div>
+                            <div class="theme-card" id="btnThemeDark">
+                                <div class="theme-icon"><i class='bx bx-moon'></i></div>
+                                <div class="theme-info">
+                                    <h4>Dark Mode</h4>
+                                    <p>มืด / สบายตา</p>
+                                </div>
+                                <div class="check-circle"><i class='bx bx-check'></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card hidden" id="securitySection">
+                        <div class="card-header">
+                            <h3><i class='bx bx-shield'></i> <span data-i18n="title_security">Security</span></h3>
+                        </div>
+                                                <div class="card">
+                            <div class="card-header">
+                                <h3><i class='bx bx-data'></i> <span data-i18n="title_data">Data Management</span></h3>
+                            </div>
+                            <div class="data-mgmt-container">
+                                <p class="text-muted" style="margin-bottom: 15px; font-size: 0.9rem;">
+                                    สำรองข้อมูลของคุณเก็บไว้เป็นไฟล์ หรือกู้คืนข้อมูลจากไฟล์เดิม
+                                </p>
+                                
+                                <div class="data-actions">
+                                    <button id="btnBackup" class="btn-data export">
+                                        <i class='bx bxs-download'></i>
+                                        <div>
+                                            <strong>Backup Data</strong>
+                                            <span>ดาวน์โหลดไฟล์ข้อมูล (.json)</span>
+                                        </div>
+                                    </button>
+
+                                    <div class="import-wrapper">
+                                        <input type="file" id="fileRestore" accept=".json" hidden>
+                                        <button id="btnRestoreTrigger" class="btn-data import">
+                                            <i class='bx bxs-cloud-upload'></i>
+                                            <div>
+                                                <strong>Restore Data</strong>
+                                                <span>อัปโหลดไฟล์กู้คืน</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="danger-zone">
+                                    <button id="btnClearAll" class="btn-danger-outline">
+                                        <i class='bx bx-trash'></i> <span data-i18n="btn_reset_data">Factory Reset (ล้างข้อมูลทั้งหมด)</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-container">
+                            <div class="form-group">
+                                <label data-i18n="label_old_pass">Current Password</label>
+                                <input type="password" id="oldPass" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label data-i18n="label_new_pass">New Password</label>
+                                <input type="password" id="newPass" class="form-control">
+                            </div>
+                            <button id="changePassBtn" class="btn-primary" data-i18n="btn_update_pass">Update Password</button>
+                            <p id="passMsg" class="mt-2"></p>
+                        </div>
+                    </div>
+
+                    <div class="card" id="guestMsgSettings">
+                        <div style="text-align: center; padding: 20px; color: var(--text-light);">
+                            <i class='bx bx-lock-alt' style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <p data-i18n="msg_login_security">Please login to access security settings.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <div id="auth-view" class="auth-overlay hidden">
+        <div class="auth-modal animate-fade-in" id="login-box">
+            <button type="button" class="btn-close-modal">✕</button>
+            <div class="auth-header"><h2>Welcome Back</h2><p>Sign In / เข้าสู่ระบบ</p></div>
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group"><label>Username</label><div class="input-icon"><input type="text" id="loginUser" required placeholder="ID"><i class='bx bx-user'></i></div></div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-icon"><input type="password" id="loginPass" required placeholder="Password"><i class='bx bx-lock-alt'></i><i class='bx bx-show toggle-pass' style="left: auto; right: 15px;"></i></div>
+                    <div style="text-align: right; margin-top: 8px;"><a href="#" data-target="forgot-box" style="font-size: 0.85rem; color: var(--accent); text-decoration: none;">Forgot Password? / ลืมรหัสผ่าน</a></div>
+                </div>
+                <div class="actions-center"><button type="submit" class="btn-primary">Login / เข้าสู่ระบบ</button></div>
+                <div class="auth-footer">No account? <a href="#" data-target="register-box">Register / สมัครสมาชิก</a></div>
+            </form>
+        </div>
+
+        <div class="auth-modal hidden" id="register-box">
+            <button type="button" class="btn-close-modal">✕</button>
+            <div class="auth-header"><h2>New Account</h2><p>Register / สมัครสมาชิก</p></div>
+            <form id="registerForm" autocomplete="off">
+                <div class="form-group"><label>Username</label><div class="input-icon"><input type="text" id="regUser" required placeholder="Choose a username"><i class='bx bx-user-plus'></i></div></div>
+                <div class="form-group"><label>Password</label><div class="input-icon"><input type="password" id="regPass" required placeholder="Create a password"><i class='bx bx-shield-quarter'></i></div></div>
+                <div class="actions-right"><button type="submit" class="btn-primary">Register / สมัครสมาชิก</button></div>
+                <div class="auth-footer"><a href="#" data-target="login-box">Back to Login / กลับหน้าเข้าสู่ระบบ</a></div>
+            </form>
+        </div>
+
+        <div class="auth-modal hidden" id="forgot-box">
+            <button type="button" class="btn-close-modal">✕</button>
+            <div class="auth-header"><h2>Reset Password</h2><p>กู้คืนรหัสผ่าน</p></div>
+            <form id="forgotForm">
+                <div class="form-group"><label>Username</label><div class="input-icon"><input type="text" id="forgotEmail" required placeholder="Your username"><i class='bx bx-user'></i></div></div>
+                <div class="form-group"><label>New Password</label><div class="input-icon"><input type="password" id="forgotNewPass" required placeholder="New password"><i class='bx bx-key'></i></div></div>
+                <div class="actions-right"><button type="submit" class="btn-primary">Reset Password / เปลี่ยนรหัส</button></div>
+                <div class="auth-footer"><a href="#" data-target="login-box">Back to Login / กลับหน้าเข้าสู่ระบบ</a></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
